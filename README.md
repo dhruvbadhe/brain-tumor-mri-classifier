@@ -1,45 +1,73 @@
-# Brain Tumor Classifier — Streamlit App
+# 🧠 Brain Tumor MRI Classifier
 
-EfficientNetB0 transfer learning model classifying brain MRI scans into 4 categories:
-**Glioma · Meningioma · No Tumor · Pituitary**
+Classifies brain MRI scans into **4 categories** using EfficientNetB0 transfer learning, deployed as an interactive Streamlit web app.
+
+**Classes:** Glioma · Meningioma · No Tumor · Pituitary
+
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Streamlit-FF4B4B?logo=streamlit&logoColor=white)](https://brain-tumor-mri-classifier-kz3gw8tjondgl5apperxjye.streamlit.app/)
 
 ---
 
-## Setup
+## Demo
 
-### 1. Add your model file
-Place `tl_model.keras` (saved from Colab via Google Drive) in this folder, next to `app.py`.
+![App Screenshot](demo.png)
 
-> **Why not `cnn_model.keras`?**  
-> The TL model (EfficientNetB0) significantly outperforms the custom CNN. Only one model is loaded to keep cold-start time low on Streamlit Cloud.
+---
 
-### 2. Run locally
+## Model
+
+| Detail | Value |
+|---|---|
+| Architecture | EfficientNetB0 (ImageNet weights, fine-tuned) |
+| Input size | 224 × 224 RGB |
+| Output | 4-class softmax |
+| Dataset | [Brain Tumor MRI — Kaggle](https://www.kaggle.com/datasets/masoudnickparvar/brain-tumor-mri-dataset) (~5,600 train images) |
+| Preprocessing | Raw 0–255 pixel values (EfficientNetB0 handles internal normalization) |
+
+> A custom CNN baseline was trained alongside EfficientNetB0. The transfer learning model significantly outperformed it and is the only model served in the app to keep cold-start time low on Streamlit Cloud.
+
+---
+
+## Project Structure
+
+```
+brain_tumor_app/
+├── app.py               # Streamlit app
+├── requirements.txt
+├── README.md
+└── tl_model.keras       # EfficientNetB0 model (add manually — see setup)
+```
+
+---
+
+## Run Locally
+
 ```bash
+git clone https://github.com/<your-username>/brain-tumor-mri-classifier.git
+cd brain-tumor-mri-classifier
+
 pip install -r requirements.txt
+
+# Place tl_model.keras in the root directory (download from Google Drive / Colab export)
 streamlit run app.py
 ```
 
-### 3. Deploy to Streamlit Cloud
-1. Push this folder (with `tl_model.keras` included) to a GitHub repo.
-2. Go to [share.streamlit.io](https://share.streamlit.io) → New app → point to `app.py`.
-3. Done.
-
-> ⚠️ `tl_model.keras` is ~17 MB — fine for GitHub. If you ever switch to a larger model, use Git LFS.
+> **Note:** `tl_model.keras` is ~17 MB and tracked in Git directly. If you switch to a larger backbone, use [Git LFS](https://git-lfs.com/).
 
 ---
 
-## File structure
-```
-brain_tumor_app/
-├── app.py
-├── requirements.txt
-├── README.md
-└── tl_model.keras   ← you add this
-```
+## Deploy on Streamlit Cloud
+
+1. Push the repo (with `tl_model.keras` included) to GitHub.
+2. Go to [share.streamlit.io](https://share.streamlit.io) → **New app** → point to `app.py`.
+3. Done — no extra configuration needed.
 
 ---
 
-## Notes
-- Model input: raw 0–255 pixel values. EfficientNetB0 handles its own normalization internally.
-- Data augmentation layers are inside the model but have no effect at inference time (Keras disables them automatically).
-- `tensorflow-cpu` is used in requirements to avoid the ~1 GB GPU build on Streamlit Cloud (no GPU available there anyway).
+## Tech Stack
+
+`TensorFlow` · `Keras` · `Streamlit` · `Pillow` · `NumPy`
+
+---
+
+> ⚠️ **Disclaimer:** For educational purposes only. Not a substitute for clinical medical diagnosis.
