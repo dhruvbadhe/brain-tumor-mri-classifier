@@ -10,7 +10,7 @@ Classifies brain MRI scans into **4 categories** using EfficientNetB0 transfer l
 
 ## Demo
 
-![App Screenshot](demo.png)
+![App Screenshot](assets/demo.png)
 
 ---
 
